@@ -1,5 +1,6 @@
 import React from 'react';
 import './About.css';
+import { Link } from 'react-router-dom';
 
 const About = () => {
   return (
@@ -89,43 +90,10 @@ const About = () => {
       <section className="py-5">
         <div className="container">
           <h2 className="section-title text-center mb-5">Наша команда</h2>
-          <div className="row justify-content-center">
-            <div className="col-md-4 mb-4 d-flex align-items-stretch">
-              <div className="team-card card border-0 shadow-sm text-center p-4">
-                <img 
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" 
-                  className="card-img-top team-img mx-auto mb-3" 
-                  alt="Team Member"
-                />
-                <h5 className="card-title">Олександр Коваленко</h5>
-                <p className="text-muted mb-3">Frontend Developer</p>
-                <p className="card-text">Спеціалізується на React та сучасному JavaScript. Має досвід роботи з великими проектами.</p>
-              </div>
-            </div>
-            <div className="col-md-4 mb-4 d-flex align-items-stretch">
-              <div className="team-card card border-0 shadow-sm text-center p-4">
-                <img 
-                  src="https://randomuser.me/api/portraits/women/44.jpg" 
-                  className="card-img-top team-img mx-auto mb-3" 
-                  alt="Team Member"
-                />
-                <h5 className="card-title">Марія Петренко</h5>
-                <p className="text-muted mb-3">UI/UX Designer</p>
-                <p className="card-text">Створює зручні та естетичні інтерфейси. Працювала з міжнародними брендами.</p>
-              </div>
-            </div>
-            <div className="col-md-4 mb-4 d-flex align-items-stretch">
-              <div className="team-card card border-0 shadow-sm text-center p-4">
-                <img 
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=400&q=80" 
-                  className="card-img-top team-img mx-auto mb-3" 
-                  alt="Team Member"
-                />
-                <h5 className="card-title">Андрій Шевченко</h5>
-                <p className="text-muted mb-3">Backend Developer</p>
-                <p className="card-text">Експерт у Node.js та базах даних. Відповідає за архітектуру серверної частини.</p>
-              </div>
-            </div>
+          <div className="text-center mt-4 mb-5">
+            <Link to="/team" className="btn btn-primary btn-lg team-btn">
+              Переглянути всю команду
+            </Link>
           </div>
         </div>
       </section>

@@ -1,0 +1,311 @@
+.team-page {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.team-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: #7f8c8d;
+  margin-bottom: 3rem;
+}
+
+.team-member-card {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.team-member-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.member-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 300px;
+  background-color: #f8f9fa;
+}
+
+.member-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: all 0.3s ease;
+  background-color: #f8f9fa;
+}
+
+.member-image::after {
+  content: attr(alt);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #6c757d;
+  font-size: 1rem;
+  text-align: center;
+  display: none;
+}
+
+.member-image[src=""]::after {
+  display: block;
+}
+
+@media (max-width: 576px) {
+  .member-image-wrapper {
+    height: 250px;
+  }
+}
+
+.member-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(102, 126, 234, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.team-member-card:hover .member-overlay {
+  opacity: 1;
+}
+
+.team-member-card:hover .member-image {
+  transform: scale(1.1);
+}
+
+.social-links {
+  display: flex;
+  gap: 15px;
+}
+
+.social-link {
+  width: 45px;
+  height: 45px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #667eea;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: #2c3e50;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.member-name {
+  color: #2c3e50;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.member-position {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.member-description {
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.member-stats {
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.stat-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  margin-top: 5px;
+}
+
+.member-skills h6 {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.skill-tag {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.member-contact .btn {
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.member-contact .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.join-team {
+  background: #f8f9fa !important;
+}
+
+.benefit-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.join-card {
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.join-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.join-card .card-body {
+  padding: 40px 30px;
+}
+
+.join-card h5 {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.join-card .btn {
+  border-radius: 25px;
+  padding: 10px 25px;
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .team-hero {
+    padding: 60px 0 !important;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .member-image-wrapper {
+    height: 250px;
+  }
+  
+  .social-links {
+    gap: 10px;
+  }
+  
+  .social-link {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .skills-list {
+    justify-content: flex-start;
+  }
+  
+  .join-card {
+    margin-top: 30px;
+  }
+}
+
+@media (max-width: 576px) {
+  .team-member-card .card-body {
+    padding: 2rem !important;
+  }
+  
+  .member-stats .row {
+    text-align: center;
+  }
+  
+  .benefit-item {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.team-member-card {
+  animation: fadeInUp 0.6s ease;
+}
+
+.join-card {
+  animation: fadeInUp 0.8s ease;
+}
