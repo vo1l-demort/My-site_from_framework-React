@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Register.css';
 
@@ -14,7 +14,63 @@ const Register = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState('');
+
+  useEffect(() => {
+    if (touched.password && formData.password) {
+      validatePasswordStrength(formData.password);
+    }
+  }, [formData.password, touched.password]);
+
+  const validatePasswordStrength = (password) => {
+    let strength = '';
+    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const mediumRegex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+
+    if (strongRegex.test(password)) {
+      strength = 'strong';
+    } else if (mediumRegex.test(password)) {
+      strength = 'medium';
+    } else if (password.length >= 6) {
+      strength = 'weak';
+    } else {
+      strength = 'very-weak';
+    }
+    setPasswordStrength(strength);
+  };
+
+  const getPasswordStrengthText = () => {
+    switch (passwordStrength) {
+      case 'strong':
+        return { text: 'Сильний пароль', color: 'success' };
+      case 'medium':
+        return { text: 'Середній пароль', color: 'warning' };
+      case 'weak':
+        return { text: 'Слабкий пароль', color: 'danger' };
+      case 'very-weak':
+        return { text: 'Дуже слабкий пароль', color: 'danger' };
+      default:
+        return { text: '', color: '' };
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name } = e.target;
+    setTouched(prev => ({ ...prev, [name]: true }));
+    
+    const fieldErrors = validateField(name, formData[name]);
+    if (fieldErrors) {
+      setErrors(prev => ({ ...prev, [name]: fieldErrors }));
+    } else {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -23,58 +79,90 @@ const Register = () => {
       [name]: type === 'checkbox' ? checked : value
     }));
     
-    if (errors[name]) {
-      setErrors(prevState => ({
-        ...prevState,
-        [name]: ''
-      }));
+    if ((name === 'email' || name === 'phone') && touched[name]) {
+      const fieldErrors = validateField(name, value);
+      if (fieldErrors) {
+        setErrors(prev => ({ ...prev, [name]: fieldErrors }));
+      } else {
+        setErrors(prev => {
+          const newErrors = { ...prev };
+          delete newErrors[name];
+          return newErrors;
+        });
+      }
+    }
+  };
+
+  const validateField = (fieldName, value) => {
+    switch (fieldName) {
+      case 'firstName':
+        if (!value.trim()) return "Ім'я обов'язкове";
+        if (value.trim().length < 2) return "Ім'я має містити щонайменше 2 символи";
+        if (!/^[a-zA-Zа-яА-ЯґҐєЄіІїЇ'\-\s]+$/.test(value)) return "Ім'я може містити лише літери, апостроф та дефіс";
+        return null;
+
+      case 'lastName':
+        if (!value.trim()) return "Прізвище обов'язкове";
+        if (value.trim().length < 2) return "Прізвище має містити щонайменше 2 символи";
+        if (!/^[a-zA-Zа-яА-ЯґҐєЄіІїЇ'\-\s]+$/.test(value)) return "Прізвище може містити лише літери, апостроф та дефіс";
+        return null;
+
+      case 'email':
+        if (!value.trim()) return "Email обов'язковий";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "Невірний формат email";
+        if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(value)) return "Email має бути дійсною email адресою";
+        return null;
+
+      case 'phone':
+        if (!value.trim()) return "Телефон обов'язковий";
+        const cleanPhone = value.replace(/\D/g, '');
+        if (cleanPhone.length < 10) return "Телефон має містити щонайменше 10 цифр";
+        if (!/^(\+?38)?(0\d{9})$/.test(cleanPhone)) return "Невірний формат українського телефону";
+        return null;
+
+      case 'password':
+        if (!value) return "Пароль обов'язковий";
+        if (value.length < 6) return "Пароль має містити щонайменше 6 символів";
+        if (!/(?=.*[a-zA-Z])/.test(value)) return "Пароль має містити щонайменше одну літеру";
+        if (!/(?=.*\d)/.test(value)) return "Пароль має містити щонайменше одну цифру";
+        return null;
+
+      case 'confirmPassword':
+        if (!value) return "Підтвердження паролю обов'язкове";
+        if (value !== formData.password) return "Паролі не співпадають";
+        return null;
+
+      case 'agreeToTerms':
+        if (!value) return "Ви повинні погодитись з умовами";
+        return null;
+
+      default:
+        return null;
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = "Ім'я обов'язкове";
-    }
-
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = "Прізвище обов'язкове";
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = "Email обов'язковий";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Невірний формат email";
-    }
-
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Телефон обов'язковий";
-    } else if (!/^\+?[\d\s-()]+$/.test(formData.phone)) {
-      newErrors.phone = "Невірний формат телефону";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Пароль обов'язковий";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Пароль має містити щонайменше 6 символів";
-    }
-
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = "Підтвердження паролю обов'язкове";
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Паролі не співпадають";
-    }
-
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = "Ви повинні погодитись з умовами";
-    }
+    
+    Object.keys(formData).forEach(fieldName => {
+      const error = validateField(fieldName, formData[fieldName]);
+      if (error) {
+        newErrors[fieldName] = error;
+      }
+    });
 
     return newErrors;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const allTouched = {};
+    Object.keys(formData).forEach(key => {
+      allTouched[key] = true;
+    });
+    setTouched(allTouched);
+
     const formErrors = validateForm();
     
     if (Object.keys(formErrors).length === 0) {
@@ -82,7 +170,19 @@ const Register = () => {
       
       try {
         await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log('Дані форми:', formData);
+        
+        const existingEmails = ['test@example.com', 'user@gmail.com'];
+        if (existingEmails.includes(formData.email)) {
+          setErrors({ email: 'Цей email вже використовується' });
+          setIsSubmitting(false);
+          return;
+        }
+
+        console.log('Дані форми для відправки:', {
+          ...formData,
+          password: '***' 
+        });
+        
         alert('Реєстрація успішна! Перевірте вашу email пошту для підтвердження.');
         
         setFormData({
@@ -94,6 +194,9 @@ const Register = () => {
           confirmPassword: '',
           agreeToTerms: false
         });
+        setTouched({});
+        setPasswordStrength('');
+        
       } catch (error) {
         console.error('Помилка реєстрації:', error);
         alert('Сталася помилка. Спробуйте ще раз.');
@@ -102,22 +205,19 @@ const Register = () => {
       }
     } else {
       setErrors(formErrors);
+      const firstErrorField = Object.keys(formErrors)[0];
+      const element = document.getElementById(firstErrorField);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.focus();
+      }
     }
   };
 
+  const strengthInfo = getPasswordStrengthText();
+
   return (
     <div className="register-page">
-      <section className="register-hero bg-gradient-primary text-white py-4">
-        <div className="container">
-          <div className="row">
-            <div className="col-12 text-center">
-              <h1 className="display-5 fw-bold mb-3">Реєстрація</h1>
-              <p className="lead mb-0">Створіть обліковий запис для доступу до всіх можливостей</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section className="register-form-section py-5">
         <div className="container">
           <div className="row justify-content-center">
@@ -137,6 +237,7 @@ const Register = () => {
                           name="firstName"
                           value={formData.firstName}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           placeholder="Введіть ваше ім'я"
                         />
                         {errors.firstName && (
@@ -155,6 +256,7 @@ const Register = () => {
                           name="lastName"
                           value={formData.lastName}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           placeholder="Введіть ваше прізвище"
                         />
                         {errors.lastName && (
@@ -174,6 +276,7 @@ const Register = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="your@email.com"
                       />
                       {errors.email && (
@@ -192,6 +295,7 @@ const Register = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         placeholder="+380 (XX) XXX-XX-XX"
                       />
                       {errors.phone && (
@@ -211,10 +315,22 @@ const Register = () => {
                           name="password"
                           value={formData.password}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           placeholder="Мінімум 6 символів"
                         />
                         {errors.password && (
                           <div className="invalid-feedback">{errors.password}</div>
+                        )}
+                        {passwordStrength && (
+                          <div className={`password-strength strength-${passwordStrength} mt-2`}>
+                            <small className={`text-${strengthInfo.color}`}>
+                              <i className={`fas fa-${passwordStrength === 'strong' ? 'shield-alt' : 'exclamation-triangle'} me-1`}></i>
+                              {strengthInfo.text}
+                            </small>
+                            <div className="strength-bar mt-1">
+                              <div className={`strength-progress strength-${passwordStrength}`}></div>
+                            </div>
+                          </div>
                         )}
                       </div>
 
@@ -229,6 +345,7 @@ const Register = () => {
                           name="confirmPassword"
                           value={formData.confirmPassword}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                           placeholder="Повторіть пароль"
                         />
                         {errors.confirmPassword && (
@@ -246,6 +363,7 @@ const Register = () => {
                           name="agreeToTerms"
                           checked={formData.agreeToTerms}
                           onChange={handleChange}
+                          onBlur={handleBlur}
                         />
                         <label className="form-check-label" htmlFor="agreeToTerms">
                           Я погоджуюсь з <Link to="/terms" className="text-primary">умовами використання</Link> та <Link to="/privacy" className="text-primary">політикою конфіденційності</Link>
@@ -279,32 +397,6 @@ const Register = () => {
                       </p>
                     </div>
                   </form>
-                </div>
-              </div>
-
-              <div className="additional-info mt-4">
-                <div className="row">
-                  <div className="col-md-4 mb-3">
-                    <div className="info-card text-center p-3">
-                      <i className="fas fa-shield-alt fa-2x text-primary mb-2"></i>
-                      <h6>Безпека даних</h6>
-                      <p className="small mb-0">Ваші дані надійно захищені</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4 mb-3">
-                    <div className="info-card text-center p-3">
-                      <i className="fas fa-bolt fa-2x text-primary mb-2"></i>
-                      <h6>Швидка реєстрація</h6>
-                      <p className="small mb-0">Процес займає менше хвилини</p>
-                    </div>
-                  </div>
-                  <div className="col-md-4 mb-3">
-                    <div className="info-card text-center p-3">
-                      <i className="fas fa-headset fa-2x text-primary mb-2"></i>
-                      <h6>Підтримка 24/7</h6>
-                      <p className="small mb-0">Завжди готові допомогти</p>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
