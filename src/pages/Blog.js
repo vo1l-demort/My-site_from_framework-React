@@ -77,6 +77,30 @@ const Blog = () => {
       date: "28 жовтня 2024",
       readTime: "11 хв",
       tags: ["DevOps", "CI/CD", "Автоматизація"]
+    },
+    {
+      id: 7,
+      title: "Майбутнє веб-розробки: тренди 2024 року",
+      excerpt: "Огляд ключових тенденцій та технологій, які формують майбутнє веб-розробки.",
+      image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      category: "trends",
+      categoryName: "Тренди",
+      author: "Олександр Коваленко",
+      date: "20 листопада 2024",
+      readTime: "12 хв",
+      tags: ["Тренди", "Майбутнє", "Технології"]
+    },
+    {
+      id: 8,
+      title: "Як створити ефективну команду розробників",
+      excerpt: "Практичні поради з формування та управління високопродуктивною командою.",
+      image: "https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      category: "management",
+      categoryName: "Менеджмент",
+      author: "Катерина Іваненко",
+      date: "18 листопада 2024",
+      readTime: "9 хв",
+      tags: ["Команда", "Менеджмент", "Продуктивність"]
     }
   ];
 
@@ -192,8 +216,8 @@ const Blog = () => {
                       ))}
                     </div>
 
-                    <div className="post-actions text-en">
-                      <Link to={`/blog/${post.id}`} className="btn btn-primary">
+                    <div className="post-actions text-end mt-3">
+                      <Link to={`/blog/${post.id}`} className="btn btn-primary post-read-btn">
                         Читати далі
                       </Link>
                     </div>
@@ -214,16 +238,16 @@ const Blog = () => {
                 Отримуйте найсвіжіші статті та новини прямо на вашу email пошту
               </p>
               <div className="newsletter-form">
-                <div className="input-group">
+                <form className="custom-newsletter-form">
                   <input 
                     type="email" 
-                    className="form-control" 
+                    className="newsletter-input" 
                     placeholder="Ваш email адреса"
                   />
-                  <button className="btn btn-primary" type="button">
-                    Підписатися
+                  <button className="newsletter-btn" type="submit">
+                    <span>Підписатися</span>
                   </button>
-                </div>
+                </form>
               </div>
             </div>
           </div>

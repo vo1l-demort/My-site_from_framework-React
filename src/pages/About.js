@@ -98,6 +98,56 @@ const About = () => {
         </div>
       </section>
 
+      {/* Achievements Section */}
+      <section className="achievements-section py-5">
+        <div className="container">
+          <div className="row text-center mb-5">
+            <div className="col-12">
+              <h2 className="section-title">Наші Досягнення</h2>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-3 col-6 text-center mb-4">
+              <div className="achievement-item">
+                <div className="achievement-icon mb-3">
+                  <i className="fas fa-trophy fa-2x text-warning"></i>
+                </div>
+                <h4 className="achievement-number">15+</h4>
+                <p className="achievement-label">Нагород та відзнак</p>
+              </div>
+            </div>
+            <div className="col-md-3 col-6 text-center mb-4">
+              <div className="achievement-item">
+                <div className="achievement-icon mb-3">
+                  <i className="fas fa-globe-europe fa-2x text-primary"></i>
+                </div>
+                <h4 className="achievement-number">25+</h4>
+                <p className="achievement-label">Країн роботи</p>
+              </div>
+            </div>
+          
+            <div className="col-md-3 col-6 text-center mb-4">
+              <div className="achievement-item">
+                <div className="achievement-icon mb-3">
+                  <i className="fas fa-users fa-2x text-success"></i>
+                </div>
+                <h4 className="achievement-number">150+</h4>
+                <p className="achievement-label">Задоволених клієнтів</p>
+              </div>
+            </div>
+            <div className="col-md-3 col-6 text-center mb-4">
+              <div className="achievement-item">
+                <div className="achievement-icon mb-3">
+                  <i className="fas fa-project-diagram fa-2x text-info"></i>
+                </div>
+                <h4 className="achievement-number">200+</h4>
+                <p className="achievement-label">Успішних проектів</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Call to Action */}
       <section className="py-5 bg-primary text-white text-center">
         <div className="container">

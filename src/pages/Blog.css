@@ -46,16 +46,17 @@
 }
 
 .blog-post-card {
-  border-radius: 20px;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  background: white;
-  width: 100%;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(102,126,234,0.08);
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+  margin-bottom: 0;
 }
 
 .blog-post-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(102,126,234,0.18);
+  transform: translateY(-4px) scale(1.01);
+  z-index: 2;
 }
 
 .post-image-wrapper {
@@ -317,6 +318,89 @@
 .newsletter-section .input-group {
   margin-bottom: 0;
   box-shadow: 0 4px 16px rgba(31, 38, 135, 0.08);
+}
+
+.custom-newsletter-form {
+  display: flex;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 40px;
+  box-shadow: 0 4px 24px rgba(102,126,234,0.08);
+  overflow: hidden;
+}
+
+.newsletter-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 18px 24px;
+  font-size: 1.1rem;
+  border-radius: 40px 0 0 40px;
+  background: #fff;
+  color: #7f8c8d;
+}
+
+.newsletter-btn {
+  border: none;
+  outline: none;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: #222;
+  font-weight: 700;
+  font-size: 1.15rem;
+  padding: 0 38px;
+  border-radius: 0 40px 40px 0;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  height: 56px;
+}
+
+.newsletter-btn:hover {
+  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  color: #fff;
+}
+
+/* Відстані між картками блогу та стилізація кнопки 'Читати далі' */
+.blog-posts .row.g-4 > [class*="col-"] {
+  margin-bottom: 32px;
+}
+
+.blog-post-card {
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(102,126,234,0.08);
+  transition: box-shadow 0.2s, transform 0.2s;
+  background: #fff;
+  margin-bottom: 0;
+}
+
+.blog-post-card:hover {
+  box-shadow: 0 8px 32px rgba(102,126,234,0.18);
+  transform: translateY(-4px) scale(1.01);
+  z-index: 2;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.post-read-btn {
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 20px 20px 0;
+  padding: 12px 32px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(102,126,234,0.08);
+  transition: background 0.2s, color 0.2s;
+}
+
+.post-read-btn:hover {
+  background: linear-gradient(90deg, #764ba2 0%, #667eea 100%);
+  color: #fff;
 }
 
 @media (max-width: 1400px) {

@@ -187,6 +187,119 @@ const Home = () => {
         </div>
       </section>
 
+      <section className="projects-section py-5">
+        <div className="container-fluid px-4">
+          <div className="row text-center mb-5">
+            <div className="col-12">
+              <h2 className="section-title">Наші Останні Проекти</h2>
+              <p className="section-subtitle">Реалізовані рішення для клієнтів</p>
+            </div>
+          </div>
+          <div className="row g-4">
+            <div className="col-lg-4 col-md-6">
+              <div className="project-card card border-0 shadow-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="E-commerce проект"
+                  className="project-image"
+                />
+                <div className="card-body p-4">
+                  <h5 className="card-title">Інтернет-магазин техніки</h5>
+                  <p className="card-text">Повний цикл розробки e-commerce платформи з інтеграцією платіжних систем</p>
+                  <div className="project-tech">
+                    <span className="tech-tag">React</span>
+                    <span className="tech-tag">Node.js</span>
+                    <span className="tech-tag">MongoDB</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4 col-md-6">
+              <div className="project-card card border-0 shadow-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80" 
+                  alt="Landing Page проект"
+                  className="project-image"
+                />
+                <div className="card-body p-4">
+                  <h5 className="card-title">Landing Page для стартапу</h5>
+                  <p className="card-text">Яскравий лендинг для презентації нового продукту</p>
+                  <div className="project-tech">
+                    <span className="tech-tag">React</span>
+                    <span className="tech-tag">Bootstrap</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-6">
+              <div className="project-card card border-0 shadow-sm">
+                <img 
+                  src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=800&q=80" 
+                  alt="Корпоративний сайт"
+                  className="project-image"
+                />
+                <div className="card-body p-4">
+                  <h5 className="card-title">Корпоративний сайт</h5>
+                  <p className="card-text">Розробка корпоративного сайту для компанії з унікальним дизайном</p>
+                  <div className="project-tech">
+                    <span className="tech-tag">React</span>
+                    <span className="tech-tag">Sass</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="testimonials-section py-5 bg-light">
+        <div className="container-fluid px-4">
+          <div className="row text-center mb-5">
+            <div className="col-12">
+              <h2 className="section-title">Відгуки Клієнтів</h2>
+              <p className="section-subtitle">Що говорять про співпрацю з нами</p>
+            </div>
+          </div>
+          <div className="row justify-content-center">
+            <div className="col-lg-10">
+              <div className="table-responsive">
+                <table className="table table-bordered table-striped align-middle bg-white">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Користувач</th>
+                      <th>Посада / Компанія</th>
+                      <th>Відгук</th>
+                      <th>Оцінка</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Олена Коваль</strong></td>
+                      <td>Директор, TechSolutions</td>
+                      <td>Команда професіоналів! Створили для нас сайт, який перевершив усі очікування. Швидко, якісно, з урахуванням всіх побажань.</td>
+                      <td>{'★'.repeat(5)}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Ігор Мельник</strong></td>
+                      <td>Менеджер, StartUpPro</td>
+                      <td>Дуже задоволені співпрацею! Все було зроблено вчасно і на найвищому рівні.</td>
+                      <td>{'★'.repeat(5)}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Марія Литвин</strong></td>
+                      <td>Підприємець</td>
+                      <td>Відмінний сервіс та підтримка! Рекомендуємо цю команду всім, хто шукає якісну розробку.</td>
+                      <td>{'★'.repeat(4)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="contact-section py-5 bg-light">
         <div className="container">
           <div className="row text-center mb-5">
