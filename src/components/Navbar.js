@@ -19,6 +19,12 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link" to="/blog">
+                <i className="fas fa-blog me-1"></i>
+                Блог
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link" to="/about">
                 Про мене
               </Link>
