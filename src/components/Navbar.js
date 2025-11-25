@@ -33,6 +33,12 @@ const Navbar = () => {
                 Контакти
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/register">
+                <i className="fas fa-user-plus me-1"></i>
+                 Реєстрація
+               </Link>
+            </li>
           </ul>
         </div>
       </div>
