@@ -4,7 +4,9 @@ import './Blog.css';
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState('all');
-  const [sortOrder, setSortOrder] = useState('desc'); // 'desc' - від нових до старих, 'asc' - від старих до нових
+  const [sortOrder, setSortOrder] = useState('desc'); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [postsPerPage, setPostsPerPage] = useState(6);
 
   const blogPosts = [
     {
@@ -144,6 +146,76 @@ const Blog = () => {
     });
   }, [filteredPosts, sortOrder]);
 
+  // Розрахунок даних для паджинації
+  const totalPosts = sortedPosts.length;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+
+  // Отримання постів для поточної сторінки
+  const currentPosts = useMemo(() => {
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    return sortedPosts.slice(indexOfFirstPost, indexOfLastPost);
+  }, [sortedPosts, currentPage, postsPerPage]);
+
+  // Функції для зміни сторінки
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  // Генерація номерів сторінок для відображення
+  const getPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    if (totalPages <= maxVisiblePages) {
+      for (let i = 1; i <= totalPages; i++) {
+        pageNumbers.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        for (let i = 1; i <= 4; i++) {
+          pageNumbers.push(i);
+        }
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        for (let i = totalPages - 3; i <= totalPages; i++) {
+          pageNumbers.push(i);
+        }
+      } else {
+        pageNumbers.push(1);
+        pageNumbers.push('...');
+        pageNumbers.push(currentPage - 1);
+        pageNumbers.push(currentPage);
+        pageNumbers.push(currentPage + 1);
+        pageNumbers.push('...');
+        pageNumbers.push(totalPages);
+      }
+    }
+    return pageNumbers;
+  };
+
+  // Скидання на першу сторінку при зміні категорії
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [activeCategory]);
+
   const handleSort = (order) => {
     setSortOrder(order);
   };
@@ -211,10 +283,28 @@ const Blog = () => {
                     Дата <span className="sort-arrow">↑</span>
                   </button>
                 </div>
+                <div className="posts-per-page-selector mt-3">
+                  <label htmlFor="postsPerPage" className="me-2">Показати:</label>
+                  <select 
+                    id="postsPerPage"
+                    className="form-select d-inline-block w-auto"
+                    value={postsPerPage}
+                    onChange={(e) => {
+                      setPostsPerPage(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <option value="3">3</option>
+                    <option value="6">6</option>
+                    <option value="9">9</option>
+                    <option value="12">12</option>
+                    <option value="15">15</option>
+                  </select>
+                </div>
                 <div className="sort-info mt-2">
                   <small className="text-muted">
                     {sortOrder === 'desc' ? 'Від нових до старих' : 'Від старих до нових'} • 
-                    Знайдено {sortedPosts.length} статей
+                    Показано {currentPosts.length} з {totalPosts} статей
                   </small>
                 </div>
               </div>
@@ -226,7 +316,7 @@ const Blog = () => {
       {/* Список постів */}
       <section className="blog-posts py-5">
         <div className="container-fluid px-4">
-          {sortedPosts.length === 0 ? (
+          {currentPosts.length === 0 ? (
             <div className="row">
               <div className="col-12 text-center">
                 <div className="empty-state py-5">
@@ -237,68 +327,133 @@ const Blog = () => {
               </div>
             </div>
           ) : (
-            <div className="row g-4">
-              {sortedPosts.map(post => (
-                <div key={post.id} className="col-xxl-4 col-lg-6 col-md-6">
-                  <div className="blog-post-card card border-0 shadow-sm h-100">
-                    <div className="post-image-wrapper">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="post-image"
-                        onError={(e) => {
-                          e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
-                        }}
-                      />
-                      <div className="post-category-badge">
-                        {post.categoryName}
+            <>
+              <div className="row g-4">
+                {currentPosts.map(post => (
+                  <div key={post.id} className="col-xxl-4 col-lg-6 col-md-6">
+                    <div className="blog-post-card card border-0 shadow-sm h-100">
+                      <div className="post-image-wrapper">
+                        <img 
+                          src={post.image} 
+                          alt={post.title}
+                          className="post-image"
+                          onError={(e) => {
+                            e.target.src = 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80';
+                          }}
+                        />
+                        <div className="post-category-badge">
+                          {post.categoryName}
+                        </div>
                       </div>
-                    </div>
-                    
-                    <div className="card-body p-4">
-                      <div className="post-meta mb-3">
-                        <span className="post-author">
-                          <i className="fas fa-user me-1"></i>
-                          {post.author}
-                        </span>
-                        <span className="post-date">
-                          <i className="fas fa-calendar me-1"></i>
-                          {post.date}
-                        </span>
-                        <span className="post-read-time">
-                          <i className="fas fa-clock me-1"></i>
-                          {post.readTime}
-                        </span>
-                      </div>
-
-                      <h3 className="post-title mb-3">
-                        <Link to={`/blog/${post.id}`} className="text-decoration-none">
-                          {post.title}
-                        </Link>
-                      </h3>
-
-                      <p className="post-excerpt text-muted mb-4">
-                        {post.excerpt}
-                      </p>
-
-                      <div className="post-tags mb-3">
-                        {post.tags.map((tag, index) => (
-                          <span key={index} className="post-tag">
-                            #{tag}
+                      
+                      <div className="card-body p-4">
+                        <div className="post-meta mb-3">
+                          <span className="post-author">
+                            <i className="fas fa-user me-1"></i>
+                            {post.author}
                           </span>
-                        ))}
-                      </div>
+                          <span className="post-date">
+                            <i className="fas fa-calendar me-1"></i>
+                            {post.date}
+                          </span>
+                          <span className="post-read-time">
+                            <i className="fas fa-clock me-1"></i>
+                            {post.readTime}
+                          </span>
+                        </div>
 
-                      <div className="post-actions">
-                        <Link to={`/blog/${post.id}`} className="btn btn-primary">
-                          Читати далі
-                        </Link>
+                        <h3 className="post-title mb-3">
+                          <Link to={`/blog/${post.id}`} className="text-decoration-none">
+                            {post.title}
+                          </Link>
+                        </h3>
+
+                        <p className="post-excerpt text-muted mb-4">
+                          {post.excerpt}
+                        </p>
+
+                        <div className="post-tags mb-3">
+                          {post.tags.map((tag, index) => (
+                            <span key={index} className="post-tag">
+                              #{tag}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="post-actions">
+                          <Link to={`/blog/${post.id}`} className="btn btn-primary">
+                            Читати далі
+                          </Link>
+                        </div>
                       </div>
                     </div>
                   </div>
+                ))}
+              </div>
+
+              {/* Паджинація */}
+              {totalPages > 1 && (
+                <div className="row mt-5">
+                  <div className="col-12">
+                    <nav aria-label="Навігація по сторінках">
+                      <ul className="pagination justify-content-center">
+                        {/* Кнопка "Попередня" */}
+                        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={handlePrevPage}
+                            disabled={currentPage === 1}
+                          >
+                            <i className="fas fa-chevron-left me-1"></i>
+                            Попередня
+                          </button>
+                        </li>
+
+                        {/* Номери сторінок */}
+                        {getPageNumbers().map((pageNum, index) => (
+                          <li 
+                            key={index} 
+                            className={`page-item ${pageNum === '...' ? 'disabled dots' : ''} ${pageNum === currentPage ? 'active' : ''}`}
+                          >
+                            {pageNum === '...' ? (
+                              <span className="page-link">...</span>
+                            ) : (
+                              <button
+                                className="page-link"
+                                onClick={() => handlePageChange(pageNum)}
+                              >
+                                {pageNum}
+                              </button>
+                            )}
+                          </li>
+                        ))}
+
+                        {/* Кнопка "Наступна" */}
+                        <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                          <button
+                            className="page-link"
+                            onClick={handleNextPage}
+                            disabled={currentPage === totalPages}
+                          >
+                            Наступна
+                            <i className="fas fa-chevron-right ms-1"></i>
+                          </button>
+                        </li>
+                      </ul>
+                    </nav>
+
+                    {/* Інформація про паджинацію */}
+                    <div className="pagination-info text-center mt-3">
+                      <small className="text-muted">
+                        Сторінка {currentPage} з {totalPages} • 
+                        Пости {((currentPage - 1) * postsPerPage) + 1} - 
+                        {Math.min(currentPage * postsPerPage, totalPosts)} з {totalPosts}
+                      </small>
+                    </div>
+                  </div>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </section>
