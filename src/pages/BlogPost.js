@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import StarRating from '../components/StarRating';
+import Comments from '../components/Comments';
 import './Blog.css';
 
 const BlogPost = () => {
@@ -459,6 +460,8 @@ const BlogPost = () => {
                   </div>
                 </div>
               </div>
+
+              <Comments />
 
               <div className="post-tags-section mt-5 pt-4 border-top">
                 <h5 className="mb-3">Теги:</h5>

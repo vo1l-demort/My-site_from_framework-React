@@ -1,0 +1,18 @@
+.comments-section {
+  border-top: 1px solid #eee;
+  padding-top: 2rem;
+}
+
+.comment-card {
+  background-color: #f8f9fa;
+  transition: transform 0.2s;
+}
+
+.comment-card:hover {
+  transform: translateY(-2px);
+}
+
+.edit-mode textarea {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
