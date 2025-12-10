@@ -882,3 +882,63 @@
     font-size: 1.5rem;
   }
 }
+
+/* Стилі для рейтингу на сторінці блогу */
+.post-rating {
+  padding: 8px 0;
+  border-top: 1px solid #f0f0f0;
+  margin-top: auto;
+}
+
+.rating-display {
+  flex: 1;
+}
+
+.rating-stats {
+  margin-top: 8px;
+}
+
+.rating-average {
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.rating-count {
+  font-size: 0.85rem;
+}
+
+.rating-actions {
+  margin-left: 20px;
+}
+
+/* Стилі для сторінки окремого поста */
+.post-rating-section .card {
+  border-radius: 15px;
+  border: 2px solid #f8f9fa;
+}
+
+.post-rating-section .card-body {
+  padding: 1.5rem;
+}
+
+.post-rating-section .card-title {
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .post-rating-section .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .rating-actions {
+    margin-left: 0;
+    margin-top: 15px;
+    width: 100%;
+  }
+  
+  .rating-actions .btn {
+    width: 100%;
+  }
+}

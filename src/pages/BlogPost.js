@@ -1,15 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import StarRating from '../components/StarRating';
 import './Blog.css';
 
 const BlogPost = () => {
   const { id } = useParams();
+
+  // Стан для рейтингу поста
+  const [postRating, setPostRating] = useState(0);
+  const [ratingCount, setRatingCount] = useState(0);
 
   // Імітація бази даних постів
   const blogPosts = {
     1: {
       id: 1,
       title: "Як обрати правильну технологію для вашого проекту",
+      initialRating: 4.2,
+      ratingCount: 15,
       content: `
         <p>Вибір технологічного стеку - один з найважливіших рішень на початку розробки проекту. Цей вибір впливає на продуктивність, масштабованість та підтримку вашого додатку в майбутньому.</p>
 
@@ -78,6 +85,8 @@ const BlogPost = () => {
     2: {
       id: 2,
       title: "Топ 10 інструментів для UI/UX дизайнерів у 2024 році",
+      initialRating: 4.5,
+      ratingCount: 22,
       content: `
         <p>Сучасний UI/UX дизайн вимагає використання потужних інструментів, які допомагають створювати інтуїтивні та естетичні інтерфейси. Ось топ-10 інструментів, які варто використовувати у 2024 році.</p>
 
@@ -112,6 +121,8 @@ const BlogPost = () => {
     3: {
       id: 3,
       title: "Оптимізація продуктивності веб-додатків на React",
+      initialRating: 4.7,
+      ratingCount: 18,
       content: `
         <p>Продуктивність - ключовий фактор успіху сучасних веб-додатків. React пропонує багато можливостей для оптимізації, які часто залишаються невикористаними.</p>
 
@@ -143,6 +154,8 @@ const BlogPost = () => {
     4: {
       id: 4,
       title: "Створення адаптивних веб-сайтів з Bootstrap 5",
+      initialRating: 4.3,
+      ratingCount: 10,
       content: `
         <p>Bootstrap 5 приніс багато нових можливостей для створення сучасних адаптивних веб-сайтів. Ось основні принципи роботи з цією потужною бібліотекою.</p>
 
@@ -188,6 +201,8 @@ const BlogPost = () => {
     5: {
       id: 5,
       title: "Принципи доступності (Accessibility) у веб-розробці",
+      initialRating: 4.6,
+      ratingCount: 12,
       content: `
         <p>Доступність (accessibility) - це практика створення веб-сайтів, які можуть використовувати люди з різними можливостями. Це не лише моральний обов'язок, але й юридична вимога у багатьох країнах.</p>
 
@@ -238,6 +253,8 @@ const BlogPost = () => {
     6: {
       id: 6,
       title: "Впровадження DevOps у невеликих командах",
+      initialRating: 4.4,
+      ratingCount: 8,
       content: `
         <p>DevOps - це не лише для великих корпорацій. Навіть невеликі команди можуть отримати значні переваги від впровадження DevOps практик.</p>
 
@@ -291,6 +308,13 @@ const BlogPost = () => {
   };
 
   const post = blogPosts[id];
+
+  useEffect(() => {
+    if (post) {
+      setPostRating(post.initialRating || 0);
+      setRatingCount(post.ratingCount || 0);
+    }
+  }, [post]);
 
   if (!post) {
     return (
@@ -389,7 +413,53 @@ const BlogPost = () => {
                 className="blog-content"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
-              
+
+              {/* Секція рейтингу поста */}
+              <div className="post-rating-section mt-4 mb-5">
+                <div className="card border-0 shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title mb-3">Оцініть цю статтю</h5>
+                    <div className="d-flex align-items-center justify-content-between">
+                      <div className="rating-display">
+                        <div className="rating-stars mb-2">
+                          <StarRating 
+                            rating={postRating}
+                            onRatingChange={(newRating) => {
+                              setPostRating(newRating);
+                              // Тут можна додати логіку збереження на сервер
+                              console.log(`Користувач оцінив пост ${id} на ${newRating} зірок`);
+                            }}
+                            size="lg"
+                            postId={id}
+                          />
+                        </div>
+                        <div className="rating-stats">
+                          <div className="rating-average">
+                            <strong>{postRating.toFixed(1)}</strong> з 5 зірок
+                          </div>
+                          <div className="rating-count text-muted">
+                            {ratingCount} оцінок
+                          </div>
+                        </div>
+                      </div>
+                      <div className="rating-actions">
+                        <button 
+                          className="btn btn-outline-primary"
+                          onClick={() => {
+                            // Скинути рейтинг
+                            setPostRating(0);
+                            localStorage.removeItem(`post_rating_${id}`);
+                          }}
+                        >
+                          <i className="fas fa-redo me-2"></i>
+                          Скинути
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="post-tags-section mt-5 pt-4 border-top">
                 <h5 className="mb-3">Теги:</h5>
                 <div className="post-tags">

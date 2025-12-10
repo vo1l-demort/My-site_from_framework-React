@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import './Blog.css';
+import StarRating from '../components/StarRating';
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -20,7 +21,9 @@ const Blog = () => {
       date: "15 листопада 2024",
       timestamp: new Date(2024, 10, 15).getTime(),
       readTime: "8 хв",
-      tags: ["React", "JavaScript", "Frontend"]
+      tags: ["React", "JavaScript", "Frontend"],
+      initialRating: 4.2,
+      ratingCount: 15
     },
     {
       id: 2,
@@ -33,7 +36,9 @@ const Blog = () => {
       date: "12 листопада 2024",
       timestamp: new Date(2024, 10, 12).getTime(),
       readTime: "6 хв",
-      tags: ["UI/UX", "Figma", "Дизайн"]
+      tags: ["UI/UX", "Figma", "Дизайн"],
+      initialRating: 4.5,
+      ratingCount: 22
     },
     {
       id: 3,
@@ -46,7 +51,9 @@ const Blog = () => {
       date: "8 листопада 2024",
       timestamp: new Date(2024, 10, 8).getTime(),
       readTime: "10 хв",
-      tags: ["React", "Оптимізація", "JavaScript"]
+      tags: ["React", "Оптимізація", "JavaScript"],
+      initialRating: 4.7,
+      ratingCount: 18
     },
     {
       id: 4,
@@ -59,7 +66,9 @@ const Blog = () => {
       date: "5 листопада 2024",
       timestamp: new Date(2024, 10, 5).getTime(),
       readTime: "7 хв",
-      tags: ["Bootstrap", "CSS", "Адаптивність"]
+      tags: ["Bootstrap", "CSS", "Адаптивність"],
+      initialRating: 4.3,
+      ratingCount: 10
     },
     {
       id: 5,
@@ -72,7 +81,9 @@ const Blog = () => {
       date: "1 листопада 2024",
       timestamp: new Date(2024, 10, 1).getTime(),
       readTime: "9 хв",
-      tags: ["Accessibility", "WCAG", "Інклюзивність"]
+      tags: ["Accessibility", "WCAG", "Інклюзивність"],
+      initialRating: 4.6,
+      ratingCount: 12
     },
     {
       id: 6,
@@ -85,7 +96,9 @@ const Blog = () => {
       date: "28 жовтня 2024",
       timestamp: new Date(2024, 9, 28).getTime(),
       readTime: "11 хв",
-      tags: ["DevOps", "CI/CD", "Автоматизація"]
+      tags: ["DevOps", "CI/CD", "Автоматизація"],
+      initialRating: 4.4,
+      ratingCount: 8
     },
     {
       id: 7,
@@ -98,7 +111,9 @@ const Blog = () => {
       date: "20 листопада 2024",
       timestamp: new Date(2024, 10, 20).getTime(),
       readTime: "12 хв",
-      tags: ["Тренди", "Майбутнє", "Технології"]
+      tags: ["Тренди", "Майбутнє", "Технології"],
+      initialRating: 4.1,
+      ratingCount: 6
     },
     {
       id: 8,
@@ -111,7 +126,9 @@ const Blog = () => {
       date: "18 листопада 2024",
       timestamp: new Date(2024, 10, 18).getTime(),
       readTime: "9 хв",
-      tags: ["Команда", "Менеджмент", "Продуктивність"]
+      tags: ["Команда", "Менеджмент", "Продуктивність"],
+      initialRating: 4.0,
+      ratingCount: 5
     }
   ];
 
@@ -378,6 +395,19 @@ const Blog = () => {
                               #{tag}
                             </span>
                           ))}
+                        </div>
+                        {/* Рейтинг поста */}
+                        <div className="post-rating mt-3">
+                          <div className="d-flex align-items-center">
+                            <StarRating 
+                              rating={post.initialRating || 0}
+                              readOnly={true}
+                              size="sm"
+                            />
+                            <small className="ms-2 text-muted">
+                              ({post.ratingCount || 0})
+                            </small>
+                          </div>
                         </div>
 
                         <div className="post-actions">

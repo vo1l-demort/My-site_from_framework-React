@@ -1,0 +1,23 @@
+.post-rating-section {
+  animation: fadeInUp 0.5s ease 0.3s both;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 193, 7, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+  }
+}
+
+.post-rating-section .card {
+  animation: pulse 2s infinite;
+}
+
+.blog-content .star-rating {
+  margin: 10px 0;
+}

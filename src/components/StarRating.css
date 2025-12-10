@@ -1,0 +1,166 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.stars-container {
+  display: flex;
+  gap: 2px;
+}
+
+.star-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e4e5e9;
+}
+
+.star-button:not(:disabled):hover {
+  transform: scale(1.2);
+}
+
+.star-button.filled {
+  color: #ffc107;
+}
+
+.star-button.empty {
+  color: #e4e5e9;
+}
+
+.star-button:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.star-button svg {
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.1));
+}
+
+.star-button.filled svg {
+  filter: drop-shadow(0 2px 3px rgba(255, 193, 7, 0.3));
+}
+
+.star-rating.read-only .star-button {
+  cursor: default;
+}
+
+.star-rating.read-only .star-button:hover {
+  transform: none;
+}
+
+.rating-info {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-weight: 600;
+}
+
+.rating-value {
+  font-size: 1.1em;
+  color: #ffc107;
+}
+
+.rating-separator {
+  color: #6c757d;
+  font-size: 0.9em;
+}
+
+.rating-max {
+  color: #6c757d;
+  font-size: 0.9em;
+}
+
+.rating-hint {
+  position: absolute;
+  bottom: -20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.star-rating:not(.read-only):hover .rating-hint {
+  opacity: 1;
+}
+
+.rating-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  z-index: 10;
+}
+
+.rating-spinner .spinner-border {
+  width: 20px;
+  height: 20px;
+  color: #ffc107;
+}
+
+@keyframes starPop {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.star-button:active:not(:disabled) {
+  animation: starPop 0.3s ease;
+}
+
+.star-rating.sm .rating-value {
+  font-size: 0.9em;
+}
+
+.star-rating.lg .rating-value {
+  font-size: 1.3em;
+}
+
+.star-rating.xl .rating-value {
+  font-size: 1.5em;
+}
+
+@media (prefers-color-scheme: dark) {
+  .star-button.empty {
+    color: #444;
+  }
+  
+  .rating-spinner {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@media (max-width: 768px) {
+  .star-rating {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .rating-hint {
+    position: static;
+    opacity: 1;
+    margin-top: 5px;
+  }
+}
