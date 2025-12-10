@@ -926,19 +926,101 @@
   font-weight: 600;
 }
 
-@media (max-width: 768px) {
-  .post-rating-section .d-flex {
-    flex-direction: column;
-    align-items: flex-start;
+.search-container {
+  max-width: 600px;
+  margin: 0 auto 1.5rem auto;
+}
+.search-input-group .form-control {
+  border-radius: 0 8px 8px 0;
+  border-left: none;
+}
+.search-input-group .input-group-text {
+  background: #fff;
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+}
+.search-input-group .btn {
+  border-radius: 0 8px 8px 0;
+}
+
+.filters-section {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+}
+.filter-card {
+  border-radius: 18px;
+  background: #fff;
+}
+.categories-list .category-link {
+  border: none;
+  background: #f1f3f6;
+  color: #333;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  transition: background 0.2s, color 0.2s;
+}
+.categories-list .category-link.active,
+.categories-list .category-link:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+.categories-list .badge {
+  font-size: 0.95em;
+}
+
+.tags-filter {
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.tag-btn {
+  border: none;
+  background: #e9ecef;
+  color: #495057;
+  border-radius: 20px;
+  padding: 6px 18px;
+  font-size: 1rem;
+  transition: background 0.2s, color 0.2s;
+  cursor: pointer;
+}
+.tag-btn.active,
+.tag-btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.reset-filters {
+  text-align: right;
+}
+.reset-filters .btn {
+  font-size: 0.95rem;
+  border-radius: 8px;
+}
+
+.sorting-section {
+  margin-bottom: 1.5rem;
+}
+.sorting-controls .btn {
+  min-width: 110px;
+}
+.filter-info .filter-stats .badge {
+  font-size: 0.95em;
+  margin-right: 0.3em;
+}
+
+@media (max-width: 991.98px) {
+  .filters-section .row > div {
+    margin-bottom: 1.5rem;
   }
-  
-  .rating-actions {
-    margin-left: 0;
-    margin-top: 15px;
-    width: 100%;
-  }
-  
-  .rating-actions .btn {
-    width: 100%;
+  .filters-section .row > div:last-child {
+    margin-bottom: 0;
   }
 }

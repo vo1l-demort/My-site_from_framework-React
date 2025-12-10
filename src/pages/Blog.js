@@ -1,13 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Blog.css';
 import StarRating from '../components/StarRating';
+import './Blog.css';
 
 const Blog = () => {
   const [activeCategory, setActiveCategory] = useState('all');
-  const [sortOrder, setSortOrder] = useState('desc'); 
+  const [sortOrder, setSortOrder] = useState('desc');
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage, setPostsPerPage] = useState(6);
+  const [postsPerPage] = useState(6);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const blogPosts = [
     {
@@ -132,32 +134,56 @@ const Blog = () => {
     }
   ];
 
-  const categories = [
-    { id: 'all', name: 'Всі статті' },
-    { id: 'web-development', name: 'Веб-розробка' },
-    { id: 'design', name: 'Дизайн' },
-    { id: 'performance', name: 'Продуктивність' },
-    { id: 'accessibility', name: 'Доступність' },
-    { id: 'devops', name: 'DevOps' },
-    { id: 'trends', name: 'Тренди' },
-    { id: 'management', name: 'Менеджмент' }
-  ];
+  // Динамічний список категорій з підрахунком
+  const categories = useMemo(() => {
+    const uniqueCategories = {};
+    blogPosts.forEach(post => {
+      if (!uniqueCategories[post.category]) {
+        uniqueCategories[post.category] = {
+          id: post.category,
+          name: post.categoryName,
+          count: 0
+        };
+      }
+    });
+    blogPosts.forEach(post => {
+      uniqueCategories[post.category].count++;
+    });
+    const allCategories = Object.values(uniqueCategories);
+    return [
+      { id: 'all', name: 'Всі статті', count: blogPosts.length },
+      ...allCategories.sort((a, b) => a.name.localeCompare(b.name))
+    ];
+  }, [blogPosts]);
 
-  // Фільтрація постів за категорією
+  // Покращена фільтрація
   const filteredPosts = useMemo(() => {
-    return activeCategory === 'all' 
-      ? blogPosts 
-      : blogPosts.filter(post => post.category === activeCategory);
-  }, [activeCategory, blogPosts]);
+    let filtered = [...blogPosts];
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(post => post.category === activeCategory);
+    }
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(post =>
+        selectedTags.every(tag => post.tags.includes(tag))
+      );
+    }
+    if (searchQuery.trim() !== '') {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(post =>
+        post.title.toLowerCase().includes(query) ||
+        post.excerpt.toLowerCase().includes(query) ||
+        post.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+    }
+    return filtered;
+  }, [blogPosts, activeCategory, selectedTags, searchQuery]);
 
-  // Сортування постів за датою
+  // Сортування
   const sortedPosts = useMemo(() => {
     return [...filteredPosts].sort((a, b) => {
       if (sortOrder === 'desc') {
-        // Від нових до старих
         return b.timestamp - a.timestamp;
       } else {
-        // Від старих до нових
         return a.timestamp - b.timestamp;
       }
     });
@@ -237,6 +263,40 @@ const Blog = () => {
     setSortOrder(order);
   };
 
+  // Обробка категорій
+  const handleCategorySelect = (categoryId) => {
+    setActiveCategory(categoryId);
+    setCurrentPage(1);
+    setSelectedTags([]);
+  };
+
+  // Обробка тегів
+  const handleTagSelect = (tag) => {
+    setSelectedTags(prev => {
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      } else {
+        return [...prev, tag];
+      }
+    });
+    setCurrentPage(1);
+  };
+
+  // Пошук
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // Унікальні теги з фільтрованих постів
+  const availableTags = useMemo(() => {
+    const tags = new Set();
+    filteredPosts.forEach(post => {
+      post.tags.forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags).sort();
+  }, [filteredPosts]);
+
   return (
     <div className="blog-page">
       {/* Герой секція */}
@@ -248,6 +308,29 @@ const Blog = () => {
               <p className="lead mb-4">
                 Корисні статті, поради та новити зі світу веб-розробки та дизайну
               </p>
+              {/* Пошук */}
+              <div className="search-container mb-4">
+                <div className="input-group search-input-group">
+                  <span className="input-group-text">
+                    <i className="fas fa-search"></i>
+                  </span>
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Пошук статей за назвою, описом або тегами..."
+                    value={searchQuery}
+                    onChange={handleSearch}
+                  />
+                  {searchQuery && (
+                    <button
+                      className="btn btn-outline-light"
+                      onClick={() => setSearchQuery('')}
+                    >
+                      <i className="fas fa-times"></i>
+                    </button>
+                  )}
+                </div>
+              </div>
               <nav aria-label="breadcrumb">
                 <ol className="breadcrumb justify-content-center">
                   <li className="breadcrumb-item">
@@ -263,67 +346,168 @@ const Blog = () => {
         </div>
       </section>
 
-      {/* Фільтр категорій та сортування */}
-      <section className="categories-filter py-4 bg-light">
+      {/* Фільтри та сортування */}
+      <section className="filters-section py-4 bg-light">
         <div className="container-fluid px-4">
           <div className="row">
-            <div className="col-12">
-              <div className="categories-scroll mb-3">
-                {categories.map(category => (
-                  <button
-                    key={category.id}
-                    className={`btn btn-category mx-2 mb-2 ${activeCategory === category.id ? 'active' : ''}`}
-                    onClick={() => setActiveCategory(category.id)}
-                  >
-                    {category.name}
-                  </button>
-                ))}
+            <div className="col-lg-3 mb-4 mb-lg-0">
+              <div className="filter-card card border-0 shadow-sm h-100">
+                <div className="card-body">
+                  <h5 className="card-title mb-3">
+                    <i className="fas fa-filter me-2"></i>
+                    Категорії
+                  </h5>
+                  <div className="categories-list">
+                    {categories.map(category => (
+                      <button
+                        key={category.id}
+                        className={`category-link w-100 text-start mb-2 ${activeCategory === category.id ? 'active' : ''}`}
+                        onClick={() => handleCategorySelect(category.id)}
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <span>{category.name}</span>
+                          <span className="badge bg-primary rounded-pill">
+                            {category.count}
+                          </span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-              
-              {/* Елементи сортування */}
-              <div className="sorting-controls text-center">
-                <div className="btn-group" role="group" aria-label="Сортування за датою">
-                  <button
-                    type="button"
-                    className={`btn btn-outline-primary ${sortOrder === 'desc' ? 'active' : ''}`}
-                    onClick={() => handleSort('desc')}
-                  >
-                    <i className="fas fa-arrow-down me-2"></i>
-                    Дата <span className="sort-arrow">↓</span>
-                  </button>
-                  <button
-                    type="button"
-                    className={`btn btn-outline-primary ${sortOrder === 'asc' ? 'active' : ''}`}
-                    onClick={() => handleSort('asc')}
-                  >
-                    <i className="fas fa-arrow-up me-2"></i>
-                    Дата <span className="sort-arrow">↑</span>
-                  </button>
+            </div>
+
+            <div className="col-lg-9">
+              <div className="filters-main">
+                <div className="active-filters">
+                  {activeCategory !== 'all' && (
+                    <span className="active-filter-item">
+                      Категорія: {categories.find(c => c.id === activeCategory)?.name}
+                      <button 
+                        className="remove-filter"
+                        onClick={() => setActiveCategory('all')}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </span>
+                  )}
+                  {selectedTags.map(tag => (
+                    <span key={tag} className="active-filter-item">
+                      #{tag}
+                      <button 
+                        className="remove-filter"
+                        onClick={() => handleTagSelect(tag)}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </span>
+                  ))}
+                  {searchQuery && (
+                    <span className="active-filter-item">
+                      Пошук: "{searchQuery}"
+                      <button 
+                        className="remove-filter"
+                        onClick={() => setSearchQuery('')}
+                      >
+                        <i className="fas fa-times"></i>
+                      </button>
+                    </span>
+                  )}
                 </div>
-                <div className="posts-per-page-selector mt-3">
-                  <label htmlFor="postsPerPage" className="me-2">Показати:</label>
-                  <select 
-                    id="postsPerPage"
-                    className="form-select d-inline-block w-auto"
-                    value={postsPerPage}
-                    onChange={(e) => {
-                      setPostsPerPage(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                  >
-                    <option value="3">3</option>
-                    <option value="6">6</option>
-                    <option value="9">9</option>
-                    <option value="12">12</option>
-                    <option value="15">15</option>
-                  </select>
+
+                {availableTags.length > 0 && (
+                  <div className="tags-filter mb-4">
+                    <h6 className="mb-3">
+                      <i className="fas fa-tags me-2"></i>
+                      Теги
+                    </h6>
+                    <div className="tags-container">
+                      {availableTags.map(tag => (
+                        <button
+                          key={tag}
+                          className={`tag-btn ${selectedTags.includes(tag) ? 'active' : ''}`}
+                          onClick={() => handleTagSelect(tag)}
+                        >
+                          #{tag}
+                          {selectedTags.includes(tag) && (
+                            <i className="fas fa-check ms-2"></i>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="sorting-section">
+                  <div className="row align-items-center">
+                    <div className="col-md-6 mb-3 mb-md-0">
+                      <div className="sorting-controls">
+                        <span className="me-3">Сортувати:</span>
+                        <div className="btn-group" role="group">
+                          <button
+                            type="button"
+                            className={`btn ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            onClick={() => {
+                              setSortOrder('desc');
+                              setCurrentPage(1);
+                            }}
+                          >
+                            <i className="fas fa-arrow-down me-2"></i>
+                            Новіші
+                          </button>
+                          <button
+                            type="button"
+                            className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            onClick={() => {
+                              setSortOrder('asc');
+                              setCurrentPage(1);
+                            }}
+                          >
+                            <i className="fas fa-arrow-up me-2"></i>
+                            Старіші
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="col-md-6">
+                      <div className="filter-info text-md-end">
+                        <div className="filter-stats">
+                          <span className="badge bg-info me-2">
+                            {filteredPosts.length} знайдено
+                          </span>
+                          {activeCategory !== 'all' && (
+                            <span className="badge bg-warning me-2">
+                              Категорія: {categories.find(c => c.id === activeCategory)?.name}
+                            </span>
+                          )}
+                          {selectedTags.length > 0 && (
+                            <span className="badge bg-success">
+                              Тегів: {selectedTags.length}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="sort-info mt-2">
-                  <small className="text-muted">
-                    {sortOrder === 'desc' ? 'Від нових до старих' : 'Від старих до нових'} • 
-                    Показано {currentPosts.length} з {totalPosts} статей
-                  </small>
-                </div>
+
+                {(activeCategory !== 'all' || selectedTags.length > 0 || searchQuery) && (
+                  <div className="reset-filters mt-3">
+                    <button
+                      className="btn btn-sm btn-outline-danger"
+                      onClick={() => {
+                        setActiveCategory('all');
+                        setSelectedTags([]);
+                        setSearchQuery('');
+                        setCurrentPage(1);
+                      }}
+                    >
+                      <i className="fas fa-times-circle me-1"></i>
+                      Скинути всі фільтри
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
