@@ -1,29 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { 
+  collection, 
+  addDoc, 
+  onSnapshot, 
+  deleteDoc, 
+  updateDoc, 
+  doc,
+  query,
+  orderBy 
+} from 'firebase/firestore';
 import './Comments.css';
 
 const Comments = () => {
   const [comments, setComments] = useState([]);
-  
   const [newCommentText, setNewCommentText] = useState('');
-
   const [editingId, setEditingId] = useState(null);
   const [editingText, setEditingText] = useState('');
 
-  const handleAddComment = () => {
-    if (!newCommentText.trim()) return; 
+  useEffect(() => {
+    const q = query(collection(db, 'comments'), orderBy('timestamp', 'desc'));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const commentsArr = [];
+      querySnapshot.forEach((doc) => {
+        commentsArr.push({ ...doc.data(), id: doc.id });
+      });
+      setComments(commentsArr);
+    });
+    return () => unsubscribe();
+  }, []);
 
-    const newComment = {
-      id: Date.now(), 
+  const handleAddComment = async () => {
+    if (!newCommentText.trim()) return;
+    await addDoc(collection(db, 'comments'), {
       text: newCommentText,
-      date: new Date().toLocaleString() 
-    };
-
-    setComments([...comments, newComment]);
-    setNewCommentText(''); 
+      date: new Date().toLocaleString(),
+      timestamp: Date.now()
+    });
+    setNewCommentText('');
   };
 
-  const handleDeleteComment = (id) => {
-    setComments(comments.filter(comment => comment.id !== id));
+  const handleDeleteComment = async (id) => {
+    await deleteDoc(doc(db, 'comments', id));
   };
 
   const startEditing = (id, currentText) => {
@@ -31,10 +49,11 @@ const Comments = () => {
     setEditingText(currentText);
   };
 
-  const saveEdit = (id) => {
-    setComments(comments.map(comment => 
-      comment.id === id ? { ...comment, text: editingText } : comment
-    ));
+  const saveEdit = async (id) => {
+    const commentRef = doc(db, 'comments', id);
+    await updateDoc(commentRef, {
+      text: editingText
+    });
     setEditingId(null);
     setEditingText('');
   };
@@ -47,7 +66,6 @@ const Comments = () => {
   return (
     <div className="comments-section mt-5">
       <h3 className="mb-4">Коментарі ({comments.length})</h3>
-
       <div className="card mb-4 shadow-sm">
         <div className="card-body">
           <h5 className="card-title">Залишити відгук</h5>
@@ -65,18 +83,15 @@ const Comments = () => {
           </button>
         </div>
       </div>
-
       <div className="comments-list">
         {comments.length === 0 && <p className="text-muted">Поки що немає коментарів. Будьте першим!</p>}
-        
         {comments.map((comment, index) => (
           <div key={comment.id} className="card mb-3 comment-card border-0 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-2">
-                <h6 className="fw-bold text-primary mb-0">Коментар {index + 1}</h6>
+                <h6 className="fw-bold text-primary mb-0">Користувач</h6>
                 <small className="text-muted">{comment.date}</small>
               </div>
-
               {editingId === comment.id ? (
                 <div className="edit-mode">
                   <textarea
