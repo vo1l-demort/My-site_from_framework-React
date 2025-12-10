@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -13,12 +13,14 @@ import Register from './pages/Register';
 import './App.css';
 
 function App() {
+  const [lang, setLang] = useState('ua');
+
   return (
     <Router>
       <div className="App">
-        <Navbar />
+        <Navbar lang={lang} setLang={setLang} />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home lang={lang} />} />
           <Route path="/about" element={<About />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogPost />} />
